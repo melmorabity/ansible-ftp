@@ -186,14 +186,16 @@ def _ftp_check_path(module, session, path):
 
     try:
         content = session.nlst(path)
-        if len(content) > 1:
-            # Filter out current and parent directory
-            content = [p for p in content if not p.endswith(("/.", "/.."))]
+        # Filter out current and parent directory
+        content = [p for p in content if not p.endswith(("/.", "/.."))]
+        if len(content) != 1:
             return (_FTPPathStatus.IS_DIR, content)
-        return (_FTPPathStatus.IS_FILE, None)
-    except ftplib.error_temp as ex:
+        if content[0] == path:
+            return (_FTPPathStatus.IS_FILE, None)
+        return (_FTPPathStatus.IS_DIR, content)
+    except ftplib.all_errors as ex:
         code = ex.args[0][:3]
-        if code != "450":
+        if code not in ("450", "550"):
             raise ex
         return (_FTPPathStatus.NOT_EXISTS, None)
 
