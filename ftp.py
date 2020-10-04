@@ -27,6 +27,7 @@ import time
 
 from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.parsing.convert_bool import BOOLEANS
 from ansible.utils.path import makedirs_safe
 
 
@@ -524,6 +525,7 @@ def main():
                 "choices": ["passive", "active"],
                 "default": "passive",
             },
+            "backup": {"type": "bool", "choices": BOOLEANS, "default": False},
             "timeout": {"type": "int"},
             "retries": {"type": "int", "default": 3},
             "interval": {"type": "int", "default": 1},
